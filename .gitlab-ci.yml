@@ -1,0 +1,9 @@
+python3.5:
+  image: python:3.5
+  script: python ./test.py
+python3.6:
+  image: python:3.6
+  script: python ./test.py
+python3.7:
+  image: python:3.7
+  script: python ./test.py
