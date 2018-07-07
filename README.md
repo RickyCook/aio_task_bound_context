@@ -1,7 +1,6 @@
 # AIO Task Bound Context
 Context manager that provides a means for context to be set, and retrieved
 in Python AsyncIO.
-Context manager that attaches inheritable context to AsyncIO tasks
 
 ## What???
 Okay so for a concrete example, thing of how Flask handles the current request:
@@ -73,6 +72,17 @@ aio.get_event_loop().run_until_complete(aio.gather(
     handle_request('value 2'),
 ))
 ```
+
+## Testing
+Python 3.5+ is supported. To run tests across all environments, we use
+`pyenv`, and some quick `virtualenv` invocations (yes, we could also use
+`tox`).
+
+To run the tests, just run `./tests_runall.sh` which will install relevant
+Python versions if not already installed, create virtualenvs for them, and
+run `tests.py`.
+
+To run tests manually, simply `./test.py`.
 
 ## License
 Copyright 2018 Ricky Cook
