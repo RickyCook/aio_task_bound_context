@@ -1,1 +1,5 @@
 __pycache__/
+ve_*/
+dist/
+build/
+*.egg-info/
