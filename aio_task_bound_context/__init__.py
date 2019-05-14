@@ -29,6 +29,15 @@ def alru_cache(func):
     return inner
 
 
+def get_current_task():
+    """ Get the current task """
+    try:
+        return aio.current_task()
+    except AttributeError:
+        # deprecated in python 3.7
+        return aio.Task.current_task()
+
+
 class TaskBoundContext(object):
     """ Base class for a task-bound context """
 
@@ -56,7 +65,7 @@ class TaskBoundContext(object):
     @classmethod
     def get_stack(cls):
         """ Gets the stack for ``cls`` on the current ``Task`` """
-        current_task = task = aio.Task.current_task()
+        current_task = task = get_current_task()
         stack = None
         while task is not None:
             task_ctx_stacks = cls.task_stacks(task)
@@ -107,7 +116,7 @@ class TaskBoundContext(object):
 
 
 def wrap_task(task):
-    setattr(task, '_ctx_parent', aio.Task.current_task())
+    setattr(task, '_ctx_parent', get_current_task())
     setattr(task, '_ctx_stacks', {})
     return task
 
