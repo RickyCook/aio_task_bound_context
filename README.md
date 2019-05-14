@@ -73,6 +73,52 @@ aio.get_event_loop().run_until_complete(aio.gather(
 ))
 ```
 
+## Examples
+_Note that all these examples will work in async tasks, which is what makes
+them more special than a simple context manager. They are all simple examples
+outside an async environment, but don't be fooled by the hidden complexity._
+
+With no `get_value` function defined, the "value" is the `TaskBoundContext`
+itself, so you can setup values in the `__init__` function if you just want
+to pass around as set of values.
+```python
+class ExampleContext(TaskBoundContext):
+    def __init__(self, *args, **kwargs):
+        self.args = args
+        self.kwargs = kwargs
+with ExampleContext('an arg', key='in kwargs'):
+    assert ExampleContext.current().args == ['an arg']
+    assert ExampleContext.current().kwargs == {'key': 'in kwargs'}
+```
+
+The "as value" of the context manager is the value returned from `get_value`.
+```python
+class ExampleContext(TaskBoundContext):
+    def __init__(self, value):
+        self.value = value
+    def get_value(self):
+        return self. value
+with ExampleContext('test') as value:
+    assert value == 'test'
+with ExampleContext('different') as value:
+    assert value == 'different'
+```
+
+Contexts are a hierarchical stack, so you can have multiple contexts and they
+will push/pop their values onto/off of the stack of contexts.
+```python
+class ExampleContext(TaskBoundContext):
+    def __init__(self, value):
+        self.value = value
+    def get_value(self):
+        return self.value
+with ExampleContext('first'):
+    assert ExampleContext.current() == 'first'
+    with ExampleContext('second'):
+        assert ExampleContext.current() == 'second'
+    assert ExampleContext.current() == 'first
+```
+
 ## Testing
 Python 3.5+ is supported. To run tests across all environments, we use
 `pyenv`, and some quick `virtualenv` invocations (yes, we could also use
