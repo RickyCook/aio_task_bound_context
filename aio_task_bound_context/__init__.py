@@ -31,11 +31,12 @@ def alru_cache(func):
 
 def get_current_task():
     """ Get the current task """
-    try:
-        return aio.current_task()
-    except AttributeError:
-        # deprecated in python 3.7
-        return aio.Task.current_task()
+    #try:
+    #    return aio.current_task()
+    #except AttributeError:
+    #    # deprecated in python 3.7
+    #    return aio.Task.current_task()
+    return aio.Task.current_task()
 
 
 class TaskBoundContext(object):
