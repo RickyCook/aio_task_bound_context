@@ -95,6 +95,11 @@ def wrap_task(task):
 
 
 def create_task_factory(task_factory = None, loop = None):
+    """ Create a task factory wrapper that adds parent/stack info to tasks
+
+    :param task_factory: the task factory to wrap
+    :param loop: loop to set the task factory for
+    """
     if loop is None and task_factory is None:
         loop = aio.get_event_loop()
     if task_factory is None:
@@ -112,6 +117,12 @@ def create_task_factory(task_factory = None, loop = None):
     return inner
 
 def set_task_factory(task_factory = None, loop = None):
+    """ Setup a wrapped task factory necessary for tracking parent/context
+    stack info
+
+    :param task_factory: the task factory to wrap
+    :param loop: loop to set the task factory for
+    """
     if loop is None:
         loop = aio.get_event_loop()
     loop.set_task_factory(create_task_factory(
