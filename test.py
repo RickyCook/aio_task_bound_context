@@ -60,6 +60,24 @@ class TestTaskBoundContext(ut.TestCase):
                 self.assertEqual(TestContextDefaults.current(), ctx_inner)
             self.assertEqual(TestContextDefaults.current(), ctx_outer)
 
+    def test_single_task_as_value(self):
+        """ Context as value is the result of get_value """
+        self.loop.run_until_complete(self._test_single_task_as_value())
+    async def _test_single_task_as_value(self):
+        with TestContext('test value') as value:
+            self.assertEqual(value, 'test value')
+            with TestContext('another value') as value:
+                self.assertEqual(value, 'another value')
+
+    def test_single_task_async_as_value(self):
+        """ Context as value is the result of get_value """
+        self.loop.run_until_complete(self._test_single_task_async_as_value())
+    async def _test_single_task_async_as_value(self):
+        async with ATestContext('test value') as value:
+            self.assertEqual(value, 'test value')
+            async with ATestContext('another value') as value:
+                self.assertEqual(value, 'another value')
+
     def test_single_task_no_context(self):
         """ Error correctly with no context """
         self.loop.run_until_complete(self._test_single_task_no_context())

@@ -64,17 +64,18 @@ class TaskBoundContext(object):
         return await self.get_value()
 
     def __enter__(self):
-        self._do_enter(self._get_value_sync())
+        return self._do_enter(self._get_value_sync())
     def __exit__(self, exc_type, exc_val, exc_tb):
         self._do_exit(self._get_value_sync())
 
     async def __aenter__(self):
-        self._do_enter(await self._get_value_async())
+        return self._do_enter(await self._get_value_async())
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         self._do_exit(await self._get_value_async())
 
     def _do_enter(self, value):
         self.get_stack().append(value)
+        return value
     def _do_exit(self, value):
         popped = self.get_stack().pop()
         assert popped == value
