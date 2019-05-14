@@ -2,7 +2,7 @@
 
 set -e
 
-VERSIONS=(3.5.1 3.6.2)
+VERSIONS=(3.5.1 3.6.2 3.7.2)
 
 for v in "${VERSIONS[@]}"; do
     if pyenv versions | grep -E "^ *$v\$" > /dev/null; then
