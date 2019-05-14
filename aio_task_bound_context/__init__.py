@@ -110,3 +110,11 @@ def create_task_factory(task_factory = None, loop = None):
         return wrap_task(task)
 
     return inner
+
+def set_task_factory(task_factory = None, loop = None):
+    if loop is None:
+        loop = aio.get_event_loop()
+    loop.set_task_factory(create_task_factory(
+        task_factory = task_factory,
+        loop = loop,
+    ))

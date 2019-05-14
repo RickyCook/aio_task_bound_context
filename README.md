@@ -53,7 +53,7 @@ can be inherrited:
 
 ```python
 import asyncio as aio
-from aio_task_bound_context import TaskBoundContext
+from aio_task_bound_context import set_task_factory, TaskBoundContext
 
 class RequestContext(TaskBoundContext):
     def __init__(self, request):
@@ -67,7 +67,9 @@ async def handle_request(request):
         await aio.sleep(1)
         assert RequestContext.current() == request # will succeed
 
-aio.get_event_loop().run_until_complete(aio.gather(
+loop = aio.get_event_loop()
+set_task_factory(loop=loop)
+loop.run_until_complete(aio.gather(
     handle_request('value 1'),
     handle_request('value 2'),
 ))
@@ -77,6 +79,16 @@ aio.get_event_loop().run_until_complete(aio.gather(
 _Note that all these examples will work in async tasks, which is what makes
 them more special than a simple context manager. They are all simple examples
 outside an async environment, but don't be fooled by the hidden complexity._
+
+To start off, we need to replace the default task factory in `asyncio` with
+a wrapper to add extra details to tasks. Assume this has been executed before
+all examples:
+```python
+import asyncio as aio
+from aio_task_bound_context import create_task_factory, TaskBoundContext
+loop = aio.get_event_loop()
+loop.set_task_factory(create_task_factory(loop=loop))
+```
 
 With no `get_value` function defined, the "value" is the `TaskBoundContext`
 itself, so you can setup values in the `__init__` function if you just want

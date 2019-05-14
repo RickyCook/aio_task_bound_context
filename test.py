@@ -24,7 +24,7 @@ class TestContextDefaults(TaskBoundContext):
 class TestTaskBoundContext(ut.TestCase):
     def setUp(self):
         self.loop = aio.get_event_loop()
-        self.loop.set_task_factory(create_task_factory(loop = self.loop))
+        set_task_factory(loop = self.loop)
     def tearDown(self):
         self.loop.set_task_factory(None)
 
