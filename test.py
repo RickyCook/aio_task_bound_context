@@ -91,7 +91,7 @@ class TestTaskBoundContext(ut.TestCase):
     async def _test_gathered_tasks(self):
         async def func_a():
             with TestContext('gathered.a'):
-                aio.sleep(0.2)
+                await aio.sleep(0.2)
                 self.assertEqual(TestContext.current(), 'gathered.a')
         async def func_b():
             with TestContext('gathered.b'):
@@ -106,7 +106,7 @@ class TestTaskBoundContext(ut.TestCase):
         async def func_a():
             self.assertEqual(TestContext.current(), 'gathered_h.outer')
             with TestContext('gathered_h.a'):
-                aio.sleep(0.2)
+                await aio.sleep(0.2)
                 self.assertEqual(TestContext.current(), 'gathered_h.a')
             self.assertEqual(TestContext.current(), 'gathered_h.outer')
         async def func_b():
