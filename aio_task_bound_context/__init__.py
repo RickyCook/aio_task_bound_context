@@ -37,18 +37,36 @@ class TaskBoundContext(object):
         return self
 
     @classmethod
+    def task_parent(cls, task):
+        try:
+            return task._ctx_parent
+        except AttributeError:
+            raise ValueError(
+                'Missing task parent; Has set_task_factory been run?',
+            )
+    @classmethod
+    def task_stacks(cls, task):
+        try:
+            return task._ctx_stacks
+        except AttributeError:
+            raise ValueError(
+                'Missing task stack; Has set_task_factory been run?',
+            )
+
+    @classmethod
     def get_stack(cls):
         """ Gets the stack for ``cls`` on the current ``Task`` """
         current_task = task = aio.Task.current_task()
         stack = None
         while task is not None:
-            stack = task._ctx_stacks.get(cls, None)
+            task_ctx_stacks = cls.task_stacks(task)
+            stack = task_ctx_stacks.get(cls, None)
             if stack is None or stack == []:
-                task = task._ctx_parent
+                task = cls.task_parent(task)
             else:
                 if task != current_task:
                     stack = [stack[-1]]
-                    current_task._ctx_stacks[cls] = stack
+                    cls.task_stacks(current_task)[cls] = stack
                 break
 
         if stack is None:
