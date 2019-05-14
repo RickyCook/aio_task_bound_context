@@ -1,9 +1,22 @@
+"""
+.. module:: aio_task_bound_context
+   :synopsis:
+    Context manager that provides a means for context to be set, and retrieved
+in Python AsyncIO.
+
+.. moduleauthor:: Ricky Cook <pypi@auto.thatpanda.com>
+"""
+
 import asyncio as aio
 
 from functools import lru_cache, wraps
 
 
 def alru_cache(func):
+    """ Basic AsyncIO version of ``lru_cache``
+
+    :param func: function to wrap with cache
+    """
     has_value = False
     value = None
 
@@ -17,11 +30,15 @@ def alru_cache(func):
 
 
 class TaskBoundContext(object):
+    """ Base class for a task-bound context """
+
     def get_value(self):
+        """ Get the current value of the context """
         raise NotImplementedError('Must override get_value')
 
     @classmethod
     def get_stack(cls):
+        """ Gets the stack for ``cls`` on the current ``Task`` """
         current_task = task = aio.Task.current_task()
         stack = None
         while task is not None:
