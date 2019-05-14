@@ -7,7 +7,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(name='aio_task_bound_context',
-      version='0.2.0',
+      version='0.2.1',
       description='Context manager that provides a means for context to be '
                   'set, and retrieved in Python AsyncIO.',
       long_description=long_description,
