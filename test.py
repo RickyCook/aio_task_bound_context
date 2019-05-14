@@ -15,6 +15,10 @@ class ATestContext(TaskBoundContext):
         self.value = value
     async def get_value(self):
         return self.value
+class TestContextDefaults(TaskBoundContext):
+    def __init__(self, *args, **kwargs):
+        self.args = args
+        self.kwargs = kwargs
 
 
 class TestTaskBoundContext(ut.TestCase):
@@ -43,6 +47,18 @@ class TestTaskBoundContext(ut.TestCase):
             async with ATestContext('aio another value'):
                 self.assertEqual(ATestContext.current(), 'aio another value')
             self.assertEqual(ATestContext.current(), 'aio test value')
+
+    def test_single_task_default_value(self):
+        """ Single task gets context stack and uses tha context as value """
+        self.loop.run_until_complete(self._test_single_task())
+    async def _test_single_task_default_value(self):
+        ctx_outer = TestContextDefaults('test value')
+        with ctx_outer:
+            self.assertEqual(TestContextDefaults.current(), ctx_outer)
+            ctx_inner = TestContextDefaults('another value')
+            with ctx_inner:
+                self.assertEqual(TestContextDefaultst.current(), ctx_inner)
+            self.assertEqual(TestContextDefaults.current(), ctx_inner)
 
     def test_single_task_no_context(self):
         """ Error correctly with no context """

@@ -34,7 +34,7 @@ class TaskBoundContext(object):
 
     def get_value(self):
         """ Get the current value of the context """
-        raise NotImplementedError('Must override get_value')
+        return self
 
     @classmethod
     def get_stack(cls):
